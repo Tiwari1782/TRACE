@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: trace-server
+    runtime: python
+    rootDir: server
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --worker-class eventlet -w 1 app:app
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: FLASK_SECRET_KEY
+        sync: false
+      - key: FLASK_ENV
+        value: production
+      - key: VERCEL_DOMAIN
+        sync: false
+      - key: NOAA_STORM_URL
+        value: https://www.nhc.noaa.gov/CurrentStorms.json
+      - key: JTWC_BULLETIN_URL
+        value: https://www.metoc.navy.mil/jtwc/jtwc.html
+      - key: OPENMETEO_URL
+        value: https://api.open-meteo.com/v1/forecast
+      - key: STORM_REFRESH_MINUTES
+        value: "10"
+      - key: WIND_FIELD_REFRESH_MINUTES
+        value: "10"
+      - key: MODEL_RELEASE_URL
+        sync: false
+    healthCheckPath: /api/health

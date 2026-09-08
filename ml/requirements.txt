@@ -1,0 +1,16 @@
+flask==3.0.*
+flask-socketio==5.*
+flask-cors
+sqlalchemy==2.*
+flask-sqlalchemy==3.*
+psycopg2-binary
+tensorflow
+scikit-learn==1.4.*
+pandas
+numpy
+python-dotenv
+requests
+beautifulsoup4
+xarray
+netcdf4
+cdsapi
