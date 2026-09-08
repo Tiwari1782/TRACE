@@ -1,41 +1,217 @@
-# TRACE — Tropical Cyclone Recognition, Analysis, Classification Engine
-### IIC 3.0 | Aerotech & Aerospace Innovation | Problem #25
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=00D4FF&height=280&section=header&text=TRACE&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Tropical%20Cyclone%20Recognition%2C%20Analysis%20%26%20Classification%20Engine&descAlignY=62&descColor=CADCFC&descSize=18&stroke=0077B6&strokeWidth=2" width="100%"/>
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=18&duration=3000&pause=800&color=00D4FF&center=true&vCenter=true&multiline=false&width=700&lines=Real-Time+Global+Cyclone+Tracking+%26+Prediction;LSTM+%2B+Random+Forest+ML+%7C+Mapbox+Globe+%2B+2D+Map;Multi-Source+Satellite+%2B+Atmospheric+Data+Fusion;IIC+3.0+%E2%9C%88+Aerotech+%26+Aerospace+Innovation" alt="TRACE typing animation"/>
+
+<br/>
+
+[![IIC 3.0](https://img.shields.io/badge/🏆%20IIC%203.0-Problem%20%2325-0D1B3E?style=for-the-badge&labelColor=0D1B3E&color=005B9E)](/)
+[![Track](https://img.shields.io/badge/🌪%20Track-Aerotech%20%26%20Aerospace%20Innovation-005B9E?style=for-the-badge&labelColor=005B9E&color=00D4FF)](/)
+[![Status](https://img.shields.io/badge/⚡%20Status-In%20Development-F07D00?style=for-the-badge&labelColor=F07D00&color=E06500)](/)
+[![License](https://img.shields.io/badge/📄%20License-MIT-007A3D?style=for-the-badge&labelColor=007A3D&color=005C2E)](LICENSE)
+
+<br/>
+
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=flat-square&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![Mapbox](https://img.shields.io/badge/Mapbox%20GL%20JS-3.x-000000?style=flat-square&logo=mapbox&logoColor=white)](https://www.mapbox.com/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow%2FKeras-2.x-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.4-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
+[![PostgreSQL](https://img.shields.io/badge/Neon%20PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://neon.tech)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-4.7-010101?style=flat-square&logo=socket.io&logoColor=white)](https://socket.io)
+[![NOAA](https://img.shields.io/badge/Dataset-NOAA%20IBTrACS-0B3D91?style=flat-square&logo=noaa&logoColor=white)](https://www.ncei.noaa.gov/)
+
+<br/>
+
+<table>
+<tr>
+<td align="center" width="25%">
+<img src="https://img.shields.io/badge/Global-Every%20Basin%20Covered-00D4FF?style=for-the-badge" /><br/>
+<sub>NA · EP · WP · NI · SI · SP · SA</sub>
+</td>
+<td align="center" width="25%">
+<img src="https://img.shields.io/badge/6%2F12%2F18%2F24hr-Intensity%20Forecast-007A3D?style=for-the-badge" /><br/>
+<sub>LSTM wind-speed prediction horizon</sub>
+</td>
+<td align="center" width="25%">
+<img src="https://img.shields.io/badge/RI%20Detection-Rapid%20Intensification-F07D00?style=for-the-badge" /><br/>
+<sub>≥35kt wind gain in 24hrs — the research gap</sub>
+</td>
+<td align="center" width="25%">
+<img src="https://img.shields.io/badge/11-Live%20%26%20Historical%20Sources-C00000?style=for-the-badge" /><br/>
+<sub>Satellite, scatterometer, reanalysis, bulletins</sub>
+</td>
+</tr>
+</table>
+
+<br/>
+
+> [!IMPORTANT]
+> **TRACE** is an AI-powered, real-time global tropical cyclone tracking and prediction platform. It fuses satellite, atmospheric, and oceanic data from NOAA, JTWC, EUMETSAT, and Open-Meteo through an **LSTM intensity model** and a **Random Forest classifier**, streaming live storm state, 6–24hr predictions, and rapid-intensification alerts to an interactive **Mapbox 3D globe + 2D news-style map** — updating every 10 minutes via WebSocket.
+
+<br/>
+
+**IIC 3.0 | Problem #25** &nbsp;·&nbsp; Aerotech & Aerospace Innovation Track
 
 ---
 
-## Project Vision
+</div>
 
-> *"An AI-powered, real-time global cyclone tracking and prediction platform — combining an interactive 3D globe, news-broadcast-style 2D maps powered by Mapbox, and an LSTM-based machine learning engine — built to identify, classify, and predict tropical cyclone patterns using multi-source satellite, atmospheric, and oceanic data, anywhere on Earth."*
+## 📋 Table of Contents
+
+<details>
+<summary><b>Click to expand full table of contents</b></summary>
+
+- [What is TRACE?](#-what-is-trace)
+- [Prototype Screenshots](#-prototype-screenshots--visual-walkthrough)
+- [Live Demo Highlights](#-live-demo-highlights)
+- [Why Mapbox for Both Globe and Map](#-why-mapbox-for-both-globe-and-map)
+- [System Architecture](#-system-architecture)
+- [Tech Stack](#-tech-stack)
+- [Data Sources](#-data-sources)
+- [Deployment Stack — Zero Cost](#-deployment-stack--zero-cost)
+- [Project Structure](#-project-structure)
+- [Database Schema](#-database-schema-neon-postgresql)
+- [ML Pipeline](#-ml-pipeline)
+- [API Reference](#-server-api-reference)
+- [WebSocket Events](#-socketio-events)
+- [UI Design Language](#-ui-design-language)
+- [Environment Variables](#-environment-variables)
+- [Getting Started](#-getting-started)
+- [On Accuracy — An Honest Note](#-on-accuracy--an-honest-note)
+- [Team](#-team)
+- [License](#-license)
+
+</details>
 
 ---
 
-## Confirmed Tech Stack
+## 🌪 What is TRACE?
 
-### Server Side
-| Layer | Technology | Version | Why |
-|-------|-----------|---------|-----|
-| Language | Python | 3.11+ | ML ecosystem, Flask compatibility |
-| Framework | Flask | 3.0 | Lightweight, proven in AeroTwin |
-| Real-time | Flask-SocketIO | 5.x | WebSocket bidirectional streaming |
-| ORM | SQLAlchemy | 2.x | Clean PostgreSQL abstraction |
-| ML — Time Series | TensorFlow / Keras LSTM | 2.x | Intensity prediction over time |
-| ML — Classification | Scikit-learn Random Forest | 1.4 | Storm category, RI flag |
-| Data Processing | Pandas + NumPy | Latest | Feature engineering, sequences |
-| Database | Neon PostgreSQL | 16 | Free, permanent, serverless, never wipes |
-| Live Storm Data | NOAA NHC Active Storms | — | Free, global, every 6 hours |
-| Live Atmosphere | Open-Meteo API | — | Free, no API key, global |
+> *"Cyclone forecasting today is fragmented across a dozen agency websites, static advisory PDFs, and separate satellite feeds — with no single, real-time, globally consistent picture of what a storm is doing and what it will do next."*
 
-### Client Side
-| Layer | Technology | Version | Why |
-|-------|-----------|---------|-----|
-| Framework | React.js | 18 | Component-based, state management |
-| Globe + Map | Mapbox GL JS | 3.x | Native globe + 2D, WebGL, news-standard |
-| Charts | Recharts | 2.x | Intensity over time visualization |
-| Real-time | Socket.IO Client | 4.7 | Live storm push from server |
-| HTTP | Axios | 1.x | API calls to Flask |
-| Styling | Tailwind CSS | 3.x | Fast, consistent dark theme |
+Tropical cyclones are among the most destructive natural events on Earth, yet the tools available to track and understand them in real time remain scattered and inconsistent across basins and agencies:
 
-### Why Mapbox For Both Globe and Map
+<div align="center">
+
+| Problem | Real-World Cost |
+|---|---|
+| 🌐 **Fragmented data** — NOAA, JTWC, EUMETSAT each cover different basins separately | No single global live view of all active storms |
+| 📉 **Static advisories** — bulletins updated a few times a day, not continuously | Delayed situational awareness during rapid changes |
+| 🚨 **Rapid Intensification blind spot** — the single hardest event to forecast | Historically the leading cause of forecast bust and surprise landfalls |
+| 🗺 **No unified visualization** — track, cone, wind field, and structure live in different tools | Analysts and the public piece together the picture manually |
+
+</div>
+
+**TRACE solves this** by fusing global storm, atmospheric, and satellite data into one continuously-updated platform — tracking every active cyclone on Earth, in real time, with an ML-driven prediction and rapid-intensification detection layer:
+
+<div align="center">
+
+| Capability | What We Monitor | Data Feeding It |
+|---|---|---|
+| 🌍 **Global Storm Tracking** | Position, wind, pressure, category, movement | NOAA NHC, JTWC, IBTrACS |
+| 📈 **Intensity Prediction** | 6 / 12 / 18 / 24hr wind speed forecast | LSTM sequence model |
+| 🚩 **Rapid Intensification Flag** | ≥35kt wind gain in 24hrs, with probability score | Random Forest classifier |
+| 🌬 **Wind Flow Visualization** | Live near-surface wind streamlines over sea & land | Open-Meteo + EUMETSAT ASCAT |
+
+</div>
+
+---
+
+## 📸 Prototype Screenshots & Visual Walkthrough
+
+> **Interactive 3D Globe, News-Style 2D Map & Real-Time Prediction Dashboard** — Built & presented for **IIC 3.0, Problem #25 — Aerotech & Aerospace Innovation**.
+
+<div align="center">
+
+### 🌍 1. Primary Globe View — Live Global Storm Tracking
+[![TRACE Globe Dashboard](Screenshot/01.png)](Screenshot/01.png)
+
+<table width="100%">
+<tr>
+<td align="left">
+<b>Key Visual Highlights:</b><br/>
+• <b>Interactive 3D Mapbox Globe:</b> Rotating globe projection with pulsing storm markers sized by wind speed<br/>
+• <b>Category Color Coding:</b> Live SSHS category badges from Tropical Depression through CAT 5<br/>
+• <b>Storm Detail Panel:</b> Live stats — wind speed, pressure, movement direction, basin<br/>
+• <b>Glassmorphism UI:</b> Deep-space dark theme with cyan accent data readouts
+</td>
+</tr>
+</table>
+
+<br/>
+
+### 🗺 2. 2D News-Style Map — Track, Prediction Cone & Wind Flow
+[![TRACE 2D Map View](Screenshot/02.png)](Screenshot/02.png)
+
+<table width="100%">
+<tr>
+<td align="left">
+<b>Key Visual Highlights:</b><br/>
+• <b>Mercator News-Style Map:</b> Seamless toggle from 3D globe to broadcast-standard flat map<br/>
+• <b>Storm Track + Prediction Cone:</b> Native GeoJSON layers from NHC GIS data<br/>
+• <b>Animated Wind Flow Layer:</b> Streamline overlay from Open-Meteo + ASCAT showing convergence and shear<br/>
+• <b>Wind Radius Rings:</b> Live wind-field extent around the storm center
+</td>
+</tr>
+</table>
+
+<br/>
+
+### 🚨 3. ML Prediction Panel — Intensity Forecast & RI Alert
+[![TRACE Prediction Panel](Screenshot/03.png)](Screenshot/03.png)
+
+<table width="100%">
+<tr>
+<td align="left">
+<b>Key Visual Highlights:</b><br/>
+• <b>LSTM Intensity Chart:</b> 6/12/18/24hr wind speed forecast with Recharts visualization<br/>
+• <b>Rapid Intensification Alert:</b> Random Forest RI probability score with confidence band<br/>
+• <b>Auto-Tiered Alert Banner:</b> WARNING / WATCH / ADVISORY severity, generated automatically<br/>
+• <b>Multi-Source Attribution:</b> Data fusion badges — NOAA, JTWC, GOES, ASCAT — visible on the panel
+</td>
+</tr>
+</table>
+
+</div>
+
+---
+
+## ⚡ Live Demo Highlights
+
+```
+╔══════════════════════════════════════════════════════════════════════════╗
+║                      TRACE DASHBOARD — LIVE DEMO                        ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  ✅  Every active global cyclone tracked live, updated every 10 minutes  ║
+║  ✅  Mapbox 3D globe ↔ 2D news-style map — seamless single-library toggle║
+║  ✅  LSTM intensity forecast — 6 / 12 / 18 / 24hr wind speed             ║
+║  ✅  Random Forest category + Rapid Intensification probability score   ║
+║  ✅  Animated wind flow layer — explains WHY a storm is intensifying     ║
+║  ✅  Storm track + prediction cone rendered as native GeoJSON layers     ║
+║  ✅  Multi-source data fusion — NOAA, JTWC, GOES, ASCAT, Sentinel-1      ║
+║  ✅  Full historical track + prediction log in Neon PostgreSQL           ║
+╚══════════════════════════════════════════════════════════════════════════╝
+```
+
+### 5-Minute Demo Script
+
+| Time | Action | Judge Sees |
+|------|--------|-----------|
+| `0:00–0:30` | Open app | Dark globe, active storm markers pulsing |
+| `0:30–1:30` | Pan to active storm | Glowing marker, category badge, wind speed |
+| `1:30–2:30` | Click storm | Detail panel — live stats + 6/12/24hr ML prediction |
+| `2:30–3:00` | Toggle to 2D map | News-style flat map with track + prediction cone |
+| `3:00–3:30` | Toggle wind flow layer | Animated wind streamlines around the storm — explains why it is intensifying, not just what it is doing |
+| `3:30–4:30` | Point out data fusion | Satellite (GOES), scatterometer (ASCAT), public JTWC/NHC bulletins feeding the model — grounds the ML in real, verifiable sources |
+| `4:30–5:00` | Close on RI detection | Highlight the rapid-intensification probability score as the research contribution |
+
+---
+
+## 🗺 Why Mapbox For Both Globe and Map
+
 ```
 Mapbox GL JS has native globe projection since v2.9.
 One library handles:
@@ -53,7 +229,114 @@ Mapbox does it natively. Less code = fewer bugs = more time for ML.
 
 ---
 
-## Deployment Stack — Zero Cost
+## 🏗 System Architecture
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║              LAYER 4 — PRESENTATION                              ║
+║  React.js 18  │  Mapbox GL JS (Globe + 2D)  │  Recharts Charts   ║
+║  View Toggle  │  Alert Banner              │  Storm Detail Panel║
+╚══════════════════════╦═══════════════════════════════════════════╝
+                       ║  WebSocket (Socket.IO 4.7)
+                       ║  pushed every 10 minutes
+╔══════════════════════╩═══════════════════════════════════════════╗
+║              LAYER 3 — APPLICATION & API                        ║
+║  Flask 3.0 REST API  │  Socket.IO Server                        ║
+║  SQLAlchemy ORM       │  Alert Controller                        ║
+╚══════════╦═══════════════════════════════════╦═══════════════════╝
+           ║ READ/WRITE                        ║ READ
+╔══════════╩══════════╗       ╔════════════════╩══════════════════╗
+║  NEON POSTGRESQL     ║       ║   LAYER 2 — INTELLIGENCE          ║
+║  storms              ║       ║  prediction.service.py            ║
+║  predictions          ║◄─────►║  LSTM (intensity) + RF (class.) ║
+║  track_points         ║       ║  alert.service.py                ║
+║  wind_field_points    ║       ╚════════════════╦══════════════════╝
+╚══════════════════════╝                        ║
+                                ╔═══════════════════╩═══════════════════╗
+                                ║        LAYER 1 — LIVE DATA SOURCES    ║
+                                ║  NOAA NHC · JTWC · GOES · ASCAT       ║
+                                ║  Sentinel-1 · Open-Meteo · IBTrACS    ║
+                                ╚════════════════════════════════════════╝
+```
+
+---
+
+## 🛠 Tech Stack
+
+<div align="center">
+
+### Server Side
+
+| Layer | Technology | Version | Why |
+|-------|-----------|---------|-----|
+| Language | Python | 3.11+ | ML ecosystem, Flask compatibility |
+| Framework | Flask | 3.0 | Lightweight, proven |
+| Real-time | Flask-SocketIO | 5.x | WebSocket bidirectional streaming |
+| ORM | SQLAlchemy | 2.x | Clean PostgreSQL abstraction |
+| ML — Time Series | TensorFlow / Keras LSTM | 2.x | Intensity prediction over time |
+| ML — Classification | Scikit-learn Random Forest | 1.4 | Storm category, RI flag |
+| Data Processing | Pandas + NumPy | Latest | Feature engineering, sequences |
+| Database | Neon PostgreSQL | 16 | Free, permanent, serverless, never wipes |
+| Live Storm Data | NOAA NHC Active Storms | — | Free, global, every 6 hours |
+| Live Atmosphere | Open-Meteo API | — | Free, no API key, global |
+
+### Client Side
+
+| Layer | Technology | Version | Why |
+|-------|-----------|---------|-----|
+| Framework | React.js | 18 | Component-based, state management |
+| Globe + Map | Mapbox GL JS | 3.x | Native globe + 2D, WebGL, news-standard |
+| Charts | Recharts | 2.x | Intensity over time visualization |
+| Real-time | Socket.IO Client | 4.7 | Live storm push from server |
+| HTTP | Axios | 1.x | API calls to Flask |
+| Styling | Tailwind CSS | 3.x | Fast, consistent dark theme |
+
+</div>
+
+---
+
+## 📡 Data Sources
+
+### Primary Training Data
+
+| # | Source | What | Size | Free? |
+|---|--------|------|------|-------|
+| 1 | **IBTrACS** — International Best Track Archive | 50+ years of all global cyclones, ground-truth labels | ~150MB | ✅ Yes |
+| 2 | **ERA5 Reanalysis** (Copernicus) | Global atmospheric data — wind, pressure, humidity, SST | ~400MB (subset) | ✅ Yes, free account |
+| 3 | **NOAA HURSAT** | Satellite imagery for tropical storms, by basin/decade | ~200MB (subset) | ✅ Yes |
+
+### Live Data APIs — No Download Required
+
+| # | Source | What | URL |
+|---|--------|------|-----|
+| 4 | **NOAA NHC Active Storms Feed** | All active storms globally, updates every 6hrs | `nhc.noaa.gov/CurrentStorms.json` |
+| 5 | **Open-Meteo Atmospheric API** | Live global atmospheric parameters at any lat/lon | `api.open-meteo.com/v1/forecast` |
+| 6 | **NHC GIS Storm Track Data** | Live track + prediction cone, GeoJSON | `nhc.noaa.gov/gis/` |
+
+### Multi-Source Data Fusion — Satellite, Aerial & Marine Wind Data
+
+| # | Source | What | Use |
+|---|--------|------|-----|
+| 7 | **NOAA/NESDIS GOES-16/18** | Real-time IR + visible cloud imagery, Americas & Pacific | Structure / eye detection features |
+| 8 | **JTWC** — Joint Typhoon Warning Center | Public bulletins, Pacific & Indian Ocean basins | Cross-validation for uncovered basins |
+| 9 | **EUMETSAT ASCAT** | Satellite radar-derived ocean surface wind vectors | Wind field input + RI features |
+| 10 | **Copernicus Sentinel-1 SAR** | Radar imagery through cloud cover, day/night | Structure confirmation during eyewall cycles |
+| 11 | **NOAA Hurricane Hunter Aircraft Archive** | In-storm dropsonde readings | Ground-truth model validation |
+
+```
+Total Data Budget
+────────────────────────────────
+IBTrACS global CSV       ~150MB
+ERA5 subset              ~400MB
+NOAA HURSAT subset       ~200MB
+ASCAT wind subset        ~50MB  (region/date limited)
+────────────────────────────────
+Total                    ~800MB  — trim ASCAT date range first if over
+```
+
+---
+
+## ☁️ Deployment Stack — Zero Cost
 
 | Service | Purpose | Free Tier | Sleeps? |
 |---------|---------|-----------|---------|
@@ -62,25 +345,6 @@ Mapbox does it natively. Less code = fewer bugs = more time for ML.
 | Neon PostgreSQL | Database | 512MB forever | Never |
 | UptimeRobot | Keep Render awake | 50 monitors free | — |
 
-### UptimeRobot — Why It's Critical
-```
-Problem:
-  Render free tier sleeps after 15 minutes of inactivity.
-  Judge opens your app → 30 second white screen → bad impression.
-
-Fix:
-  UptimeRobot pings your Render URL every 10 minutes.
-  Server never sleeps. App opens instantly every time.
-
-Setup:
-  1. Go to uptimerobot.com → free account
-  2. Add monitor → HTTP(S) type
-  3. URL → your Render server URL
-  4. Interval → 10 minutes
-  Done. Server stays awake 24/7.
-```
-
-### Full Deployment Flow
 ```
 GitHub Repository (source of truth)
         |                    |
@@ -95,283 +359,47 @@ UptimeRobot → pings Render every 10min → never sleeps
 
 ---
 
-## Data Sources
-
-### Primary Training Data
-
-#### 1. IBTrACS — International Best Track Archive
-```
-What:    50+ years of ALL global cyclones. Every basin. Ground truth labels.
-Size:    ~150MB (global CSV)
-Free:    Yes, completely
-Link:    https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/csv/
-File:    ibtracs.ALL.list.v04r00.csv
-Columns used:
-  → SID (storm ID), NAME, SEASON, BASIN
-  → ISO_TIME (every 6 hours)
-  → LAT, LON
-  → USA_WIND (wind speed knots)
-  → USA_PRES (pressure mb)
-  → USA_SSHS (Saffir-Simpson category -5 to 5)
-```
-
-#### 2. ERA5 Reanalysis — Atmospheric Features
-```
-What:    Global atmospheric data — wind, pressure, humidity, sea surface temp
-Size:    ~400MB (Indian + Pacific + Atlantic subset, 2000-2023)
-Free:    Yes, requires free account
-Link:    https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels
-Steps:
-  1. Create free account at cds.climate.copernicus.eu
-  2. Install CDS API: pip install cdsapi
-  3. Download only the variables + region you need
-  4. Do NOT download full global ERA5 — it is petabytes
-Variables needed:
-  → 10m u/v wind components
-  → Mean sea level pressure
-  → Sea surface temperature
-  → Relative humidity 850hPa
-```
-
-#### 3. NOAA HURSAT — Hurricane Satellite Data
-```
-What:    Satellite imagery specifically for tropical storms, global
-Size:    ~200MB (subset by basin and year range)
-Free:    Yes
-Link:    https://www.ncdc.noaa.gov/hursat/
-Note:    Download by decade — do NOT download all years at once
-```
-
-### Live Data APIs (Real-time, No Download Required)
-
-#### 4. NOAA NHC Active Storms Feed
-```
-What:    All currently active storms globally, updates every 6 hours
-Free:    Yes, no API key needed
-URL:     https://www.nhc.noaa.gov/CurrentStorms.json
-Returns: Active storm names, positions, wind speeds, categories
-```
-
-#### 5. Open-Meteo Atmospheric API
-```
-What:    Live global atmospheric parameters at any lat/lon — used both for
-         storm feature input AND for the wind flow visualization layer
-Free:    Yes, no API key needed, no rate limit for reasonable use
-URL:     https://api.open-meteo.com/v1/forecast
-Params:  latitude, longitude, wind_speed_10m, wind_direction_10m,
-         pressure_msl, temperature_2m
-```
-
-#### 6. NHC GIS Storm Track Data
-```
-What:    Live storm track + prediction cone in GeoJSON format
-Free:    Yes, no key needed
-URL:     https://www.nhc.noaa.gov/gis/
-Use:     Feed directly into Mapbox as GeoJSON layer
-```
-
-### Multi-Source Data Fusion — Satellite, Aerial & Marine Wind Data
-
-Maritime surface data alone under-represents what actually drives cyclone
-formation and intensification (upper-level wind shear, cloud-top structure,
-convective banding). The following are real, publicly accessible sources
-that add that signal — no classified or restricted feeds involved:
-
-```
-7. NOAA/NESDIS GOES-16 / GOES-18 Satellite Imagery
-   What:    Real-time infrared + visible cloud imagery over the Americas
-            and Pacific — shows storm structure, eye formation, convection
-   Free:    Yes, fully public
-   Link:    https://www.star.nesdis.noaa.gov/GOES/
-   Use:     Visual overlay + eye/structure detection features
-
-8. JTWC — Joint Typhoon Warning Center
-   What:    Public warning bulletins for Pacific & Indian Ocean basins,
-            issued by the US Navy/Air Force's joint operations center —
-            this is the public-facing equivalent of "navy" storm data;
-            no classified or operational military data is used
-   Free:    Yes, public bulletins
-   Link:    https://www.metoc.navy.mil/jtwc/jtwc.html
-   Use:     Cross-validation for basins IBTrACS/NHC don't cover live
-
-9. EUMETSAT ASCAT — Scatterometer Ocean Surface Winds
-   What:    Satellite radar-derived wind vectors over open ocean —
-            fills the gap maritime buoy/ship data leaves in open water
-   Free:    Yes, requires free registration
-   Link:    https://www.eumetsat.int/
-   Use:     Wind field input for the flow visualization layer + RI features
-
-10. Copernicus Sentinel-1 SAR Imagery
-    What:    Radar imagery that sees storm structure through cloud cover,
-             day or night — useful when optical satellite view is blocked
-    Free:    Yes, ESA Copernicus program
-    Link:    https://dataspace.copernicus.eu/
-    Use:     Structure confirmation during eyewall replacement cycles
-
-11. NOAA Hurricane Hunter Aircraft Archive (Dropsonde Data)
-    What:    Real in-storm readings from reconnaissance aircraft —
-             pressure, wind, temperature measured by dropped sensors
-    Free:    Yes, public archive (not live-streamed)
-    Link:    https://www.aoml.noaa.gov/hrd/data_sub/hurr.html
-    Use:     Ground-truth validation for model accuracy, not live feed
-```
-
-**On accuracy — an honest note:** no combination of these sources allows
-prediction of every movement with certainty. Cyclone track and intensity
-forecasting is inherently probabilistic, which is why every prediction in
-this system ships with a confidence score and — for track — a prediction
-cone rather than a single line. The goal of fusing these sources is to
-tighten that cone and improve RI-detection recall, not to eliminate
-uncertainty. This framing is also more credible in front of judges familiar
-with the domain than an "accurate and precise" claim would be.
-
-### Total Data Budget
-```
-IBTrACS global CSV       ~150MB
-ERA5 subset              ~400MB
-NOAA HURSAT subset       ~200MB
-ASCAT wind subset        ~50MB  (region/date limited)
-────────────────────────────────
-Total                    ~800MB  — trim ASCAT date range first if over
-```
-
----
-
-## Professional Folder Structure
+## 📁 Project Structure
 
 ```
 trace/
-|
+│
 ├── server/                              # Flask — deployed on Render
-|   ├── src/
-|   |   ├── routes/
-|   |   |   ├── storm.routes.py         # /api/storms/*
-|   |   |   ├── prediction.routes.py    # /api/predict/*
-|   |   |   ├── history.routes.py       # /api/history/*
-|   |   |   └── health.routes.py        # /api/health
-|   |   |
-|   |   ├── controllers/
-|   |   |   ├── storm.controller.py
-|   |   |   ├── prediction.controller.py
-|   |   |   ├── history.controller.py
-|   |   |   └── alert.controller.py
-|   |   |
-|   |   ├── services/
-|   |   |   ├── noaa.service.py
-|   |   |   ├── jtwc.service.py
-|   |   |   ├── goes.service.py
-|   |   |   ├── ascat.service.py
-|   |   |   ├── openmeteo.service.py
-|   |   |   ├── prediction.service.py
-|   |   |   └── alert.service.py
-|   |   |
-|   |   ├── models/
-|   |   |   ├── storm.model.py
-|   |   |   ├── prediction.model.py
-|   |   |   ├── track.model.py
-|   |   |   └── alert.model.py
-|   |   |
-|   |   ├── sockets/
-|   |   |   └── storm.socket.py
-|   |   |
-|   |   ├── middleware/
-|   |   |   ├── error_handler.py
-|   |   |   └── cors.py
-|   |   |
-|   |   └── config/
-|   |       ├── db.py
-|   |       └── settings.py
-|   |
-|   ├── app.py
-|   └── requirements.txt
-|
-|
+│   ├── src/
+│   │   ├── routes/                      # /api/storms, /api/predict, /api/history, /api/health
+│   │   ├── controllers/
+│   │   ├── services/                    # noaa, jtwc, goes, ascat, openmeteo, prediction, alert
+│   │   ├── models/                      # storm, prediction, track, alert
+│   │   ├── sockets/
+│   │   ├── middleware/
+│   │   └── config/
+│   ├── app.py
+│   └── requirements.txt
+│
 ├── client/                              # React — deployed on Vercel
-|   ├── public/
-|   |   └── favicon.ico
-|   |
-|   └── src/
-|       ├── assets/
-|       |   ├── textures/
-|       |   └── icons/
-|       |
-|       ├── components/
-|       |   ├── ui/
-|       |   |   ├── Button.jsx
-|       |   |   ├── Badge.jsx
-|       |   |   ├── Card.jsx
-|       |   |   ├── Spinner.jsx
-|       |   |   └── AlertBanner.jsx
-|       |   |
-|       |   ├── layout/
-|       |   |   ├── Navbar.jsx
-|       |   |   ├── Sidebar.jsx
-|       |   |   └── Layout.jsx
-|       |   |
-|       |   ├── map/
-|       |   |   ├── GlobeView.jsx
-|       |   |   ├── MapView.jsx
-|       |   |   ├── ViewToggle.jsx
-|       |   |   ├── StormMarker.jsx
-|       |   |   ├── StormTrack.jsx
-|       |   |   ├── PredictionCone.jsx
-|       |   |   ├── WindRadiusRings.jsx
-|       |   |   └── WindFlowLayer.jsx
-|       |   |
-|       |   └── storm/
-|       |       ├── StormDetailPanel.jsx
-|       |       ├── PredictionCard.jsx
-|       |       ├── IntensityChart.jsx
-|       |       ├── StormListItem.jsx
-|       |       └── RapidIntensifyAlert.jsx
-|       |
-|       ├── hooks/
-|       |   ├── useSocket.js
-|       |   ├── useStorms.js
-|       |   ├── useWindField.js
-|       |   └── usePrediction.js
-|       |
-|       ├── services/
-|       |   └── api.js
-|       |
-|       ├── store/
-|       |   └── stormStore.js
-|       |
-|       ├── utils/
-|       |   ├── stormColors.js
-|       |   ├── formatters.js
-|       |   └── mapHelpers.js
-|       |
-|       ├── App.jsx
-|       └── main.jsx
-|
-|
+│   └── src/
+│       ├── components/
+│       │   ├── ui/                      # Button, Badge, Card, Spinner, AlertBanner
+│       │   ├── layout/                  # Navbar, Sidebar, Layout
+│       │   ├── map/                     # GlobeView, MapView, StormTrack, PredictionCone, WindFlowLayer
+│       │   └── storm/                   # StormDetailPanel, PredictionCard, IntensityChart
+│       ├── hooks/                       # useSocket, useStorms, useWindField, usePrediction
+│       ├── services/api.js
+│       ├── store/stormStore.js
+│       └── utils/
+│
 ├── ml/                                  # ML pipeline — run locally only
-|   ├── data/
-|   |   ├── download_ibtracs.py
-|   |   ├── download_era5.py
-|   |   ├── download_hursat.py
-|   |   └── download_ascat.py
-|   |
-|   ├── preprocessing/
-|   |   ├── clean_ibtracs.py
-|   |   ├── engineer_features.py
-|   |   └── build_sequences.py
-|   |
-|   ├── training/
-|   |   ├── train_lstm.py
-|   |   ├── train_rf.py
-|   |   └── evaluate.py
-|   |
-|   ├── saved_models/                    # Output — NOT committed to Git
-|   |   ├── trace_lstm.keras
-|   |   ├── trace_rf.pkl
-|   |   └── scaler.pkl
-|   |
-|   └── notebooks/
-|       └── data_exploration.ipynb
-|
-|
+│   ├── data/                            # download_ibtracs, download_era5, download_hursat, download_ascat
+│   ├── preprocessing/                   # clean_ibtracs, engineer_features, build_sequences
+│   ├── training/                        # train_lstm, train_rf, evaluate
+│   ├── saved_models/                    # NOT committed to Git
+│   └── notebooks/
+│
+├── Screenshot/                          # Prototype screenshots
+│   ├── 01.png                           # Globe view — live global storm tracking
+│   ├── 02.png                           # 2D map — track, prediction cone, wind flow
+│   └── 03.png                           # Prediction panel — LSTM forecast + RI alert
+│
 ├── .env.example
 ├── .gitignore
 ├── README.md
@@ -380,7 +408,7 @@ trace/
 
 ---
 
-## Database Schema (Neon PostgreSQL)
+## 🗄 Database Schema (Neon PostgreSQL)
 
 ```sql
 -- Active and historical storms
@@ -452,9 +480,10 @@ CREATE TABLE wind_field_points (
 
 ---
 
-## ML Pipeline
+## 🤖 ML Pipeline
 
 ### LSTM Model — Intensity Prediction
+
 ```
 Input:
   → 24 timesteps (6 days of 6-hourly readings)
@@ -481,6 +510,7 @@ Training:
 ```
 
 ### Random Forest — Classification
+
 ```
 Input features:
   → Current wind, pressure, lat, lon
@@ -501,15 +531,16 @@ Config:
 ```
 
 ### Rapid Intensification Definition
+
 ```
 Rapid Intensification = wind speed increases >= 35 knots in 24 hours
 This is the #1 killer in cyclone forecasting — almost no model predicts it well.
-This is your research gap. This is what wins.
+This is the research gap. This is what wins.
 ```
 
 ---
 
-## Server API Reference
+## 📡 Server API Reference
 
 ### REST Endpoints
 
@@ -527,23 +558,25 @@ This is your research gap. This is what wins.
 
 ### Socket.IO Events
 
-**Server → Client (pushed every 10 minutes)**
-```
-storm_update       → { storm_id, wind_speed, pressure, lat, lon, category }
-prediction_update  → { storm_id, wind_6hr, wind_12hr, wind_24hr, ri_flag }
-alert_update       → { storm_id, type, severity, message }
-wind_field_update  → { points: [{ lat, lon, speed, direction }, ...] }
-```
+**Server → Client** *(pushed every 10 minutes)*
+
+| Event | Payload |
+|---|---|
+| `storm_update` | `{ storm_id, wind_speed, pressure, lat, lon, category }` |
+| `prediction_update` | `{ storm_id, wind_6hr, wind_12hr, wind_24hr, ri_flag }` |
+| `alert_update` | `{ storm_id, type, severity, message }` |
+| `wind_field_update` | `{ points: [{ lat, lon, speed, direction }, ...] }` |
 
 **Client → Server**
-```
-subscribe_storm    → { storm_id }   // Get updates for specific storm
-unsubscribe_storm  → { storm_id }
-```
+
+| Event | Payload |
+|---|---|
+| `subscribe_storm` | `{ storm_id }` — get updates for a specific storm |
+| `unsubscribe_storm` | `{ storm_id }` |
 
 ---
 
-## UI Design Language
+## 🎨 UI Design Language
 
 | Element | Value |
 |---------|-------|
@@ -560,6 +593,7 @@ unsubscribe_storm  → { storm_id }
 | CAT 5 storms | Red glow + faster pulse |
 
 ### Storm Category Color Map
+
 ```
 CAT 5  →  #ff2244  Deep Red     + glow
 CAT 4  →  #ff6600  Orange Red   + pulse
@@ -570,28 +604,9 @@ TS     →  #aaaaff  Light Blue
 TD     →  #888888  Grey
 ```
 
-### Wind Flow Layer
-```
-What:      Animated streamline/particle overlay showing live near-surface
-           wind movement over sea and land, sourced from Open-Meteo
-           (grid pull) + EUMETSAT ASCAT (open-ocean scatterometer winds)
-Purpose:   Visually explains WHY a storm is forming/intensifying where it
-           is — convergence zones, onshore flow, wind shear — not just
-           showing storms that already exist
-Toggle:    Off by default, switched on via ViewToggle.jsx alongside
-           Globe / 2D Map — kept optional so it doesn't clutter the
-           primary storm view
-Scope:     Regional (around active storms / user-selected area), not
-           full-globe — full-globe particle rendering is expensive and
-           mostly visual noise unless zoomed into a formation zone
-Render:    Mapbox custom WebGL layer, or animated canvas overlay of
-           particles following the fetched vector field (cheaper to
-           build under hackathon time constraints)
-```
-
 ---
 
-## Environment Variables
+## 🔐 Environment Variables
 
 ```env
 # Neon PostgreSQL
@@ -615,46 +630,29 @@ EUMETSAT_ASCAT_KEY=your-eumetsat-key
 WIND_FIELD_REFRESH_MINUTES=10
 ```
 
----
-
-## Git Safety Rules
-
-```gitignore
-# Never commit these:
-ml/data/
-ml/saved_models/
-server/.env
-client/.env
-__pycache__/
-*.pyc
-node_modules/
-venv/
-*.nc
-*.npy
-```
-
-### Model Weights (Too Large For Git)
-```
-Option A — GitHub Releases:
-  Upload trace_lstm.keras to GitHub Releases (supports up to 2GB)
-  Server downloads on first startup via script
-
-Option B — Google Drive:
-  Upload model to Drive → get shareable link
-  Add download_model.py script that fetches it
-  Render runs this script on startup
-```
+> [!WARNING]
+> **Never commit `.env` to Git.** It contains database credentials and API keys. It is in `.gitignore` by default.
 
 ---
 
-## Quick Start
+## 🚀 Getting Started
+
+### Prerequisites
+
+```
+Python 3.11+  ·  Node.js 18+  ·  Neon PostgreSQL account  ·  Git
+```
+
+### Step 1 — Clone
 
 ```bash
-# Clone
 git clone https://github.com/yourusername/trace.git
 cd trace
+```
 
-# Server setup
+### Step 2 — Server Setup
+
+```bash
 cd server
 python -m venv venv
 venv\Scripts\activate          # Windows
@@ -662,8 +660,11 @@ source venv/bin/activate       # Mac/Linux
 pip install -r requirements.txt
 cp ../.env.example .env
 # Edit .env — add DATABASE_URL
+```
 
-# ML pipeline (run once locally)
+### Step 3 — ML Pipeline (run once locally)
+
+```bash
 cd ../ml
 python data/download_ibtracs.py
 python preprocessing/clean_ibtracs.py
@@ -671,13 +672,19 @@ python preprocessing/engineer_features.py
 python preprocessing/build_sequences.py
 python training/train_lstm.py        # ~45-60 mins
 python training/train_rf.py          # ~5 mins
+```
 
-# Start server
+### Step 4 — Start Backend
+
+```bash
 cd ../server
 python app.py
 # http://localhost:5000
+```
 
-# Client setup
+### Step 5 — Start Frontend
+
+```bash
 cd ../client
 npm install
 npm run dev
@@ -686,14 +693,59 @@ npm run dev
 
 ---
 
-## Judge Demo Script — 5 Minutes
+## 🎯 On Accuracy — An Honest Note
 
-| Time | Action | Judge Sees |
-|------|--------|-----------|
-| 0:00–0:30 | Open app | Dark globe, active storm markers pulsing |
-| 0:30–1:30 | Pan to active storm | Glowing marker, category badge, wind speed |
-| 1:30–2:30 | Click storm | Detail panel — live stats + 6/12/24hr ML prediction |
-| 2:30–3:00 | Toggle to 2D map | News-style flat map with track + prediction cone |
-| 3:00–3:30 | Toggle wind flow layer | Animated wind streamlines around the storm — explains why it is intensifying, not just what it is doing |
-| 3:30–4:30 | Point out data fusion | Mention satellite (GOES), scatterometer (ASCAT), and public JTWC/NHC bulletins feeding the model — grounds the ML in real, verifiable sources |
-| 4:30–5:00 | Close on RI detection | Highlight the rapid-intensification probability score as the research contribution |
+No combination of these sources allows prediction of every movement with certainty. Cyclone track and intensity forecasting is inherently probabilistic — which is why every prediction in this system ships with a **confidence score** and, for track, a **prediction cone** rather than a single line. The goal of fusing these sources is to tighten that cone and improve RI-detection recall, not to eliminate uncertainty. This framing is also more credible in front of judges familiar with the domain than an "accurate and precise" claim would be.
+
+---
+
+## 👥 Team
+
+<div align="center">
+
+<table>
+<tr>
+<td align="center" width="25%">
+<br/>
+<b>Your Name</b><br/>
+<sub>Team Lead · Backend · Architecture</sub>
+</td>
+<td align="center" width="25%">
+<br/>
+<b>Teammate Name</b><br/>
+<sub>Frontend · Mapbox · UI/UX</sub>
+</td>
+<td align="center" width="25%">
+<br/>
+<b>Teammate Name</b><br/>
+<sub>ML Pipeline · Data Engineering</sub>
+</td>
+<td align="center" width="25%">
+<br/>
+<b>Teammate Name</b><br/>
+<sub>Data Fusion · Documentation</sub>
+</td>
+</tr>
+</table>
+
+</div>
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+
+<br/>
+
+**Built for IIC 3.0 — Problem #25 — Aerotech & Aerospace Innovation**
+
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=00D4FF&height=120&section=footer" width="100%"/>
+
+</div>
