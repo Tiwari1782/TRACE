@@ -1,78 +1,108 @@
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useStormStore } from '../../store/stormStore'
+import { MdRadar, MdCyclone } from 'react-icons/md'
+import { FiGlobe, FiMenu, FiX, FiCloudRain } from 'react-icons/fi'
+import { RiLiveFill } from 'react-icons/ri'
+
+const NAV_ITEMS = [
+  { to: '/', label: 'Hurricane tracking', icon: MdCyclone, match: (p) => p === '/' },
+  { to: '/globe', label: 'Globe view', icon: FiGlobe, match: (p) => p === '/globe' },
+  { to: '/live-weather', label: 'Live weather', icon: FiCloudRain, match: (p) => p === '/live-weather' },
+  { to: '/map', label: 'Live radar map', icon: MdRadar, match: (p) => p === '/map' || p === '/tracker' },
+]
 
 export default function Navbar() {
   const { connected } = useStormStore()
   const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
 
-  const isOverview = location.pathname === '/'
-  const isMap = location.pathname === '/map' || location.pathname === '/tracker'
+  // Close the mobile menu on route change
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
+
+  // Lock body scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
 
   return (
     <header className="rv-navbar">
-      {/* Brand */}
       <Link to="/" className="nav-brand">
         <div className="nav-brand-icon">
-          <i className="fa-solid fa-hurricane" />
+          <MdCyclone size={22} />
         </div>
         <span className="nav-brand-text">TRACE</span>
+        <span className="nav-beta-badge">BETA</span>
       </Link>
 
-      {/* Navigation Links */}
-      <nav className="nav-links">
-        <Link
-          to="/"
-          className={`nav-link ${isOverview ? 'active' : ''}`}
-        >
-          Hurricane Tracking
-        </Link>
-        <Link
-          to="/map"
-          className={`nav-link ${isMap ? 'active' : ''}`}
-        >
-          <i className="fa-solid fa-satellite" style={{ fontSize: '11px', marginRight: '6px', opacity: 0.8 }} />
-          Live Radar Map
-        </Link>
+      {/* Desktop navigation */}
+      <nav className="nav-links" aria-label="Primary">
+        {NAV_ITEMS.map(({ to, label, icon: Icon, match }) => (
+          <Link key={to} to={to} className={`nav-link ${match(location.pathname) ? 'active' : ''}`}>
+            <Icon size={14} />
+            {label}
+          </Link>
+        ))}
       </nav>
 
-      {/* Right Side */}
       <div className="nav-right">
-        <Link
-          to="/map"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 14px',
-            borderRadius: '20px',
-            background: 'linear-gradient(135deg, rgba(0,212,255,0.15) 0%, rgba(0,153,204,0.25) 100%)',
-            border: '1px solid rgba(0,212,255,0.4)',
-            color: '#00d4ff',
-            fontSize: '12px',
-            fontWeight: 600,
-            textDecoration: 'none',
-            boxShadow: '0 2px 10px rgba(0,212,255,0.15)',
-            transition: 'all 0.2s',
-          }}
-        >
-          <i className="fa-solid fa-globe" style={{ fontSize: '11px' }} />
-          <span>Live Radar</span>
+        <div className="nav-live" role="status">
+          <span className={`hero-status-dot ${connected ? 'is-live' : 'is-connecting'}`} />
+          <span>{connected ? 'Live' : 'Connecting'}</span>
+        </div>
+        <Link to="/map" className="nav-radar-btn">
+          <RiLiveFill size={13} />
+          <span>Live radar</span>
         </Link>
-        <div className="nav-live">
-          <span
-            className="nav-live-dot"
-            style={{
-              background: connected ? 'var(--status-live)' : '#ff9800',
-              boxShadow: connected
-                ? '0 0 8px rgba(0,230,118,0.5)'
-                : '0 0 8px rgba(255,152,0,0.5)',
-            }}
-          />
-          <span style={{ color: connected ? 'var(--status-live)' : '#ff9800' }}>
-            {connected ? 'LIVE' : 'CONNECTING'}
-          </span>
+
+        <button
+          type="button"
+          className="nav-mobile-toggle"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          {menuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+        </button>
+      </div>
+
+      {/* Mobile navigation */}
+      <div className={`nav-mobile-menu ${menuOpen ? 'is-open' : ''}`}>
+        <nav aria-label="Primary, mobile">
+          {NAV_ITEMS.map(({ to, label, icon: Icon, match }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`nav-mobile-link ${match(location.pathname) ? 'active' : ''}`}
+            >
+              <Icon size={16} />
+              {label}
+            </Link>
+          ))}
+        </nav>
+        <div className="nav-mobile-footer">
+          <div className="nav-live">
+            <span className={`hero-status-dot ${connected ? 'is-live' : 'is-connecting'}`} />
+            <span>{connected ? 'Live' : 'Connecting'}</span>
+          </div>
+          <Link to="/map" className="nav-radar-btn">
+            <RiLiveFill size={13} />
+            <span>Live radar</span>
+          </Link>
         </div>
       </div>
+
+      {menuOpen && (
+        <button
+          type="button"
+          className="nav-mobile-scrim"
+          aria-label="Close menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
     </header>
   )
 }

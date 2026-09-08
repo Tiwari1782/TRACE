@@ -4,6 +4,8 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import useStormStore from '../../store/stormStore.js'
 import { getCategoryColor } from '../../utils/stormColors.js'
 import { getTrackHistory } from '../../services/api.js'
+import WindRadiusRings from './WindRadiusRings.jsx'
+import WindParticleCanvas from './WindParticleCanvas.jsx'
 
 /**
  * MapView — MapLibre GL map with satellite imagery.
@@ -22,12 +24,14 @@ export default function MapView({
   showControls = true,
   interactive = true,
   onStormClick = null,
+  weatherOverlay = null,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const markers = useRef({})
   const trackMarkers = useRef([])
   const [styleLoaded, setStyleLoaded] = useState(false)
+  const [mapReady, setMapReady] = useState(false)
 
   const storms = useStormStore((s) => s.storms)
   const selectedStorm = useStormStore((s) => s.selectedStorm)
@@ -103,6 +107,7 @@ export default function MapView({
 
       map.current.on('load', () => {
         setStyleLoaded(true)
+        setMapReady(true)
       })
     } catch (err) {
       console.error('[MapView] MapLibre init error:', err)
@@ -362,11 +367,65 @@ export default function MapView({
     })
   }, [storms, predictions, styleLoaded])
 
+  // ── Dynamic Weather Overlay (Radar / Satellite) ────────────────
+  useEffect(() => {
+    if (!map.current || !styleLoaded) return
+
+    const SOURCE_ID = 'mapview-weather-source'
+    const LAYER_ID  = 'mapview-weather-layer'
+
+    try {
+      if (map.current.getLayer(LAYER_ID)) map.current.removeLayer(LAYER_ID)
+      if (map.current.getSource(SOURCE_ID)) map.current.removeSource(SOURCE_ID)
+    } catch (_) {}
+
+    if (!weatherOverlay || weatherOverlay === 'wind') return
+
+    let tileUrl = null
+    if (weatherOverlay === 'radar') {
+      tileUrl = 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png'
+    } else if (weatherOverlay === 'satellite') {
+      tileUrl = 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/goes-east-ir-4km-900913/{z}/{x}/{y}.png'
+    }
+
+    if (tileUrl) {
+      try {
+        map.current.addSource(SOURCE_ID, {
+          type: 'raster',
+          tiles: [tileUrl],
+          tileSize: 256,
+        })
+        const beforeId = map.current.getLayer('labels') ? 'labels' : undefined
+        map.current.addLayer(
+          {
+            id: LAYER_ID,
+            type: 'raster',
+            source: SOURCE_ID,
+            paint: { 'raster-opacity': 0.8 },
+          },
+          beforeId
+        )
+      } catch (err) {
+        console.warn('[MapView] overlay error:', err)
+      }
+    }
+  }, [weatherOverlay, styleLoaded])
+
   return (
-    <div
-      ref={mapContainer}
-      className="w-full h-full"
-      style={{ background: '#0a0f1a' }}
-    />
+    <>
+      <div
+        ref={mapContainer}
+        className="w-full h-full"
+        style={{ background: '#0a0f1a' }}
+      />
+      {/* Animated danger-zone rings per storm */}
+      {mapReady && (
+        <WindRadiusRings map={map.current} storms={storms} />
+      )}
+      {/* Animated Wind Particle Streamlines Overlay */}
+      {mapReady && weatherOverlay === 'wind' && (
+        <WindParticleCanvas map={map.current} storms={storms} visible={true} particleCount={240} />
+      )}
+    </>
   )
 }

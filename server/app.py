@@ -19,12 +19,22 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = FLASK_SECRET_KEY
 
+# Ensure common development origins are included
+DEV_ORIGINS = list(set(CORS_ORIGINS + [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]))
+
 # CORS — must be configured before SocketIO init
 CORS(app,
-     origins=CORS_ORIGINS,
+     origins=DEV_ORIGINS,
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"],
      methods=["GET", "POST", "OPTIONS"])
+
+init_db(app)
 
 socketio = SocketIO(
     app,
@@ -36,7 +46,7 @@ socketio = SocketIO(
     ping_interval=25
 )
 
-# Register blueprints
+# Register blueprints done
 app.register_blueprint(storms_bp,      url_prefix="/api/storms")
 app.register_blueprint(predictions_bp, url_prefix="/api/predict")
 app.register_blueprint(alerts_bp,      url_prefix="/api/alerts")
@@ -94,6 +104,5 @@ def on_subscribe(data):
         socketio.emit("prediction_update", predict(storm))
 
 if __name__ == "__main__":
-    init_db()
     eventlet.spawn(push_storm_updates)
     socketio.run(app, host="0.0.0.0", port=5000, debug=(FLASK_ENV == "development"))

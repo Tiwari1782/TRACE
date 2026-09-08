@@ -14,14 +14,22 @@ def get_recent_alerts():
 
 
 def get_track_history(storm_id: str):
-    points = (
-        TrackPoint.query
-        .filter_by(storm_id=storm_id)
-        .order_by(TrackPoint.timestamp.asc())
-        .all()
-    )
-    return jsonify({
-        "storm_id":   storm_id,
-        "track":      [p.to_dict() for p in points],
-        "count":      len(points),
-    })
+    try:
+        points = (
+            TrackPoint.query
+            .filter_by(storm_id=storm_id)
+            .order_by(TrackPoint.timestamp.asc())
+            .all()
+        )
+        return jsonify({
+            "storm_id":   storm_id,
+            "track":      [p.to_dict() for p in points],
+            "count":      len(points),
+        })
+    except Exception as exc:
+        return jsonify({
+            "storm_id":   storm_id,
+            "track":      [],
+            "count":      0,
+        })
+
