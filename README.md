@@ -162,6 +162,8 @@ Tropical cyclones are among the most destructive natural events on Earth, yet th
 
 ### 🚨 3. ML Prediction Panel — Intensity Forecast & RI Alert
 [![TRACE Prediction Panel](Screenshot/03.png)](Screenshot/03.png)
+[![TRACE Prediction Panel](Screenshot/04.png)](Screenshot/04.png)
+[![TRACE Prediction Panel](Screenshot/05.png)](Screenshot/05.png)
 
 <table width="100%">
 <tr>
