@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { FiWind, FiThermometer, FiCloudRain, FiExternalLink } from 'react-icons/fi'
 import { MdSatelliteAlt, MdRadar, MdWaves } from 'react-icons/md'
 import Navbar from '../components/layout/Navbar'
 import WeatherMapView from '../components/map/WeatherMapView'
+import MapStormCard from '../components/map/MapStormCard'
 import { useStormStore } from '../store/stormStore'
 
 /**
@@ -14,8 +16,9 @@ import { useStormStore } from '../store/stormStore'
 export default function GlobeViewPage() {
   const [activeLayer, setActiveLayer] = useState('wind')
   const [tooltipId,   setTooltipId]   = useState(null)
+  const [selectedCardStorm, setSelectedCardStorm] = useState(null)
 
-  const { storms, selectedStorm } = useStormStore()
+  const { storms, selectedStorm, selectStorm } = useStormStore()
   const centerStorm = selectedStorm || storms[0] || null
   const centerLon   = centerStorm?.lon ?? centerStorm?.longitude ?? -40
   const centerLat   = centerStorm?.lat ?? centerStorm?.latitude  ?? 20
@@ -64,7 +67,26 @@ export default function GlobeViewPage() {
           center={[centerLon, centerLat]}
           zoom={2.8}
           showStorms={true}
+          onStormClick={(storm) => {
+            setSelectedCardStorm(storm)
+            selectStorm(storm)
+          }}
         />
+
+        {/* ── Interactive Cyclone Card on Click ─────────────────── */}
+        <AnimatePresence>
+          {selectedCardStorm && (
+            <MapStormCard
+              storm={selectedCardStorm}
+              onClose={() => setSelectedCardStorm(null)}
+              style={{
+                bottom: '32px',
+                left: '24px',
+                zIndex: 95,
+              }}
+            />
+          )}
+        </AnimatePresence>
 
         {/* ── Top-Left Info Badge ─────────────────────────────────── */}
         <div className="globe-overlay-tl" style={{ pointerEvents: 'none' }}>

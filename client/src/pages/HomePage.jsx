@@ -1,23 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Toaster } from 'react-hot-toast'
 import { MdSatelliteAlt, MdRadar, MdCyclone } from 'react-icons/md'
 import { FiChevronDown, FiMaximize2, FiExternalLink } from 'react-icons/fi'
 import { RiRobot2Line } from 'react-icons/ri'
 import Navbar from '../components/layout/Navbar'
 import MapView from '../components/map/MapView'
 import StormCard from '../components/storm/StormCard'
+import MapStormCard from '../components/map/MapStormCard'
 import { useStormStore } from '../store/stormStore'
+import { fireDangerToast } from '../utils/dangerAlerts'
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { storms, lastSync, connected } = useStormStore()
+  const { storms, lastSync, connected, selectStorm } = useStormStore()
   const [timeStr, setTimeStr] = useState('')
+  const [selectedMapStorm, setSelectedMapStorm] = useState(null)
+  const [highlightedStormId, setHighlightedStormId] = useState(null)
 
   const videoRef = useRef(null)
   const lightningRef = useRef(null)
   const timerRef = useRef(null)
   const heroRef = useRef(null)
+  const homeAlertFiredRef = useRef(false)
 
   // Live clock
   useEffect(() => {
@@ -34,6 +40,28 @@ export default function HomePage() {
     const t = setInterval(update, 30000)
     return () => clearInterval(t)
   }, [])
+
+  // Danger alert on homepage for high-threat storms
+  useEffect(() => {
+    if (!storms || storms.length === 0 || homeAlertFiredRef.current) return
+    homeAlertFiredRef.current = true
+
+    const dangerous = [...storms].sort((a, b) => (b.category || 0) - (a.category || 0))
+    const highest = dangerous[0]
+
+    if (highest && highest.category >= 3) {
+      setTimeout(() => {
+        fireDangerToast({
+          title: `ACTIVE CAT ${highest.category} HURRICANE — ${(highest.name || 'CYCLONE').toUpperCase()}`,
+          message: `${Math.round(highest.wind_speed || 0)} kt winds active in ${highest.basin || 'Oceanic'} Basin. Potential threat to coastal populations.`,
+          advice: 'Public Advisory: Monitor emergency directives. Tap this alert to open live telemetry.',
+          severity: highest.category >= 4 ? 'danger' : 'warning',
+          Icon: MdCyclone,
+          onClick: () => navigate(`/storm/${highest.id}`),
+        })
+      }, 1500)
+    }
+  }, [storms, navigate])
 
   // Mobile: slow video slightly so cloud motion doesn't feel frantic on small screens
   useEffect(() => {
@@ -89,6 +117,7 @@ export default function HomePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-void)', overflowX: 'hidden', overflowY: 'auto' }}>
+      <Toaster position="top-right" containerStyle={{ top: 72 }} />
       <Navbar />
 
       {/* ═══ HERO SECTION ═══ */}
@@ -220,10 +249,39 @@ export default function HomePage() {
               embedded
               interactive={true}
               showControls={false}
-              onStormClick={(storm) => navigate(`/storm/${storm.id}`)}
+              onStormClick={(storm) => {
+                setSelectedMapStorm(storm)
+                setHighlightedStormId(storm.id)
+                selectStorm(storm)
+              }}
             />
 
-            <div className="map-scan-line" aria-hidden="true" />
+            {/* Interactive Floating Storm Card on Map Click */}
+            <AnimatePresence>
+              {selectedMapStorm && (
+                <MapStormCard
+                  storm={selectedMapStorm}
+                  compact={true}
+                  onClose={() => setSelectedMapStorm(null)}
+                  onViewInList={(s) => {
+                    const el = document.getElementById(`storm-card-${s.id}`)
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                      setHighlightedStormId(s.id)
+                    }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    bottom: '12px',
+                    left: '12px',
+                    zIndex: 40,
+                    maxWidth: 'min(330px, calc(100% - 24px))',
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            <div className="map-scan-line" aria-hidden="true" style={{ pointerEvents: 'none' }} />
           </div>
 
           <Link to="/map" className="rv-hero-map-fullscreen">
@@ -267,6 +325,9 @@ export default function HomePage() {
             {storms.map((storm, i) => (
               <motion.div
                 key={storm.id}
+                id={`storm-card-${storm.id}`}
+                className={highlightedStormId === storm.id ? 'storm-card-highlighted' : ''}
+                style={{ borderRadius: 'var(--glass-radius)', transition: 'all 0.3s ease' }}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-20px' }}

@@ -6,6 +6,7 @@ import { MdRadar, MdSatelliteAlt } from 'react-icons/md'
 import Navbar from '../components/layout/Navbar'
 import MapView from '../components/map/MapView'
 import WindFlowLayer from '../components/map/WindFlowLayer'
+import MapStormCard from '../components/map/MapStormCard'
 import { useStormStore } from '../store/stormStore'
 import { getCategoryColor, getCategoryLabel } from '../utils/stormColors'
 import { windToKph } from '../utils/formatters'
@@ -14,6 +15,7 @@ export default function MapPage() {
   const navigate = useNavigate()
   const { storms, selectedStorm, selectStorm } = useStormStore()
   const [activeStormId, setActiveStormId] = useState(null)
+  const [showCard, setShowCard]           = useState(true)
   const [timeStr, setTimeStr]             = useState('')
   const [windyOpen, setWindyOpen]         = useState(false)
   const [weatherOverlay, setWeatherOverlay] = useState('wind')
@@ -39,7 +41,11 @@ export default function MapPage() {
   }, [])
 
   const currentStorm = storms.find((s) => s.id === activeStormId) || selectedStorm || storms[0]
-  const handleSelectStorm = (storm) => { setActiveStormId(storm.id); selectStorm(storm) }
+  const handleSelectStorm = (storm) => {
+    setActiveStormId(storm.id)
+    selectStorm(storm)
+    setShowCard(true)
+  }
   const catColor = currentStorm ? getCategoryColor(currentStorm.category) : 'var(--accent-cyan)'
   const catLabel = currentStorm ? getCategoryLabel(currentStorm.category) : 'Active System'
 
@@ -175,64 +181,16 @@ export default function MapPage() {
 
       {/* Bottom-Left Popup Card */}
       <AnimatePresence>
-        {currentStorm && (
-          <motion.div
-            key={currentStorm.id}
-            className="map-popup-card"
-            initial={{ opacity: 0, y: 20, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.96 }}
-            transition={{ duration: 0.25 }}
+        {showCard && currentStorm && (
+          <MapStormCard
+            storm={currentStorm}
+            onClose={() => setShowCard(false)}
             style={{
               bottom: windyOpen ? 'calc(45vh + 24px)' : '32px',
+              left: '24px',
               transition: 'bottom 0.35s var(--ease-out)',
             }}
-          >
-            <div
-              className="map-popup-cat-badge"
-              style={{ background: `${catColor}18`, border: `1px solid ${catColor}44`, color: catColor }}
-            >
-              {catLabel}
-            </div>
-            <div className="map-popup-name">
-              {(currentStorm.name || 'UNNAMED').toUpperCase()}
-            </div>
-            <div className="map-popup-stats">
-              <div className="map-popup-stat">
-                <div className="map-popup-stat-label">Wind Speed</div>
-                <div className="map-popup-stat-value" style={{ color: catColor }}>
-                  {windToKph(currentStorm.wind_speed)}<span className="map-popup-stat-unit">km/h</span>
-                </div>
-              </div>
-              <div className="map-popup-stat">
-                <div className="map-popup-stat-label">Pressure</div>
-                <div className="map-popup-stat-value" style={{ color: 'var(--text-primary)' }}>
-                  {Math.round(currentStorm.pressure || 1010)}<span className="map-popup-stat-unit">hPa</span>
-                </div>
-              </div>
-              <div className="map-popup-stat">
-                <div className="map-popup-stat-label">Moving</div>
-                <div className="map-popup-stat-value" style={{ color: '#7c8cf8', fontSize: '13px' }}>
-                  {currentStorm.movement_dir || 'WNW'}{' '}
-                  {currentStorm.movement_speed ? `${windToKph(currentStorm.movement_speed)} km/h` : ''}
-                </div>
-              </div>
-              <div className="map-popup-stat">
-                <div className="map-popup-stat-label">Position</div>
-                <div className="map-popup-stat-value" style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
-                  {currentStorm.latitude?.toFixed(1) ?? '0.0'}°,{' '}
-                  {currentStorm.longitude?.toFixed(1) ?? '0.0'}°
-                </div>
-              </div>
-            </div>
-            <button
-              className="map-popup-cta"
-              onClick={() => navigate(`/storm/${currentStorm.id}`)}
-            >
-              View Deep AI Forecast
-              <FiArrowRight size={13} />
-            </button>
-          </motion.div>
+          />
         )}
       </AnimatePresence>
 

@@ -1,15 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
-import { FiArrowLeft, FiTrendingUp, FiTrendingDown, FiMinus, FiChevronRight, FiChevronLeft } from 'react-icons/fi'
+import {
+  FiArrowLeft,
+  FiTrendingUp,
+  FiTrendingDown,
+  FiMinus,
+  FiChevronRight,
+  FiChevronLeft,
+  FiMaximize2,
+  FiActivity,
+  FiThermometer,
+  FiWind,
+  FiDroplet,
+  FiBarChart2,
+} from 'react-icons/fi'
 import { BsExclamationTriangleFill } from 'react-icons/bs'
-import { MdCyclone } from 'react-icons/md'
+import { MdCyclone, MdWaves, MdThunderstorm } from 'react-icons/md'
 
 import Navbar from '../components/layout/Navbar'
 import MapView from '../components/map/MapView'
+import StormExpandedDashboard from '../components/storm/StormExpandedDashboard'
 import { useStormStore } from '../store/stormStore'
 import { getPrediction, getStorm } from '../services/api'
+import { checkAndFireStormAlerts } from '../utils/dangerAlerts'
 import {
   getCategoryColor,
   getCategoryLabel,
@@ -43,9 +58,21 @@ export default function StormDetailPage() {
   const { stormId } = useParams()
   const { storms, predictions, setPrediction, connected } = useStormStore()
 
-  const [storm, setStorm]       = useState(null)
-  const [loading, setLoading]   = useState(true)
+  const [storm, setStorm]         = useState(null)
+  const [loading, setLoading]     = useState(true)
   const [panelOpen, setPanelOpen] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [selectedCardForModal, setSelectedCardForModal] = useState(null)
+  const alertsFiredRef = useRef(false)
+
+  // Escape key minimizes expanded big screen
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsExpanded(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   // 1. Locate storm from store or fetch
   useEffect(() => {
@@ -107,6 +134,13 @@ export default function StormDetailPage() {
     const t = setInterval(update, 30000)
     return () => clearInterval(t)
   }, [])
+
+  // 3. Fire danger alerts for high-risk storms
+  useEffect(() => {
+    if (!storm || alertsFiredRef.current) return
+    alertsFiredRef.current = true
+    checkAndFireStormAlerts(storm, pred, () => setIsExpanded(true))
+  }, [storm, pred])
 
   if (loading) {
     return (
@@ -173,7 +207,15 @@ export default function StormDetailPage() {
       {/* Full-screen map */}
       <div className="rv-fullmap">
         <div className="rv-fullmap-container">
-          <MapView focusStormId={stormId} embedded={false} />
+          <MapView
+            focusStormId={stormId}
+            embedded={false}
+            onStormClick={(s) => {
+              if (s && s.id !== stormId) {
+                navigate(`/storm/${s.id}`)
+              }
+            }}
+          />
         </div>
 
         {/* Live badge */}
@@ -229,21 +271,32 @@ export default function StormDetailPage() {
         >
           {/* ── Header ── */}
           <div className="rv-info-panel-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <span
-                className="panel-cat-badge"
-                style={{
-                  background: `${catColor}22`,
-                  border: `1px solid ${catColor}55`,
-                  color: catColor,
-                }}
-              >
-                {catLabel}
-              </span>
-              <div className="panel-active-indicator">
-                <span className="panel-active-dot" />
-                ACTIVE
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span
+                  className="panel-cat-badge"
+                  style={{
+                    background: `${catColor}22`,
+                    border: `1px solid ${catColor}55`,
+                    color: catColor,
+                  }}
+                >
+                  {catLabel}
+                </span>
+                <div className="panel-active-indicator">
+                  <span className="panel-active-dot" />
+                  ACTIVE
+                </div>
               </div>
+
+              {/* Option to Expand to Big Screen */}
+              <button
+                className="panel-expand-btn"
+                onClick={() => setIsExpanded(true)}
+                title="Expand to Full Big Screen Analysis"
+              >
+                <FiMaximize2 size={12} /> Expand Screen
+              </button>
             </div>
 
             <div className="panel-storm-name">
@@ -257,14 +310,44 @@ export default function StormDetailPage() {
           </div>
 
           <div className="rv-info-panel-body">
+            {/* OPTION TO EXPAND CALLOUT BANNER */}
+            <div
+              className="panel-expand-banner"
+              onClick={() => setIsExpanded(true)}
+              role="button"
+              tabIndex={0}
+            >
+              <div className="banner-text">
+                <div className="banner-title">
+                  <FiMaximize2 size={13} /> OPTION TO EXPAND BIG SCREEN
+                </div>
+                <div className="banner-desc">
+                  Interactive graphs, SST, wind shear, humidity & RI engine
+                </div>
+              </div>
+              <div className="banner-action-btn">
+                Expand <FiChevronRight size={12} />
+              </div>
+            </div>
+
             {/* RI Alert */}
             {pred?.rapid_intensify && (
-              <div className="panel-ri-alert">
-                <div className="ri-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <BsExclamationTriangleFill size={13} color="var(--danger-red)" /> RAPID INTENSIFICATION
+              <div
+                className="panel-ri-alert card-tappable-cell"
+                style={{ cursor: 'pointer' }}
+                onClick={() => { setSelectedCardForModal('ri'); setIsExpanded(true); }}
+                title="Tap to open Rapid Intensification AI graph"
+              >
+                <div className="ri-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <BsExclamationTriangleFill size={13} color="var(--danger-red)" /> RAPID INTENSIFICATION
+                  </span>
+                  <span style={{ fontSize: '10px', color: '#ff4d6a', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <FiBarChart2 size={11} /> Tap for graph
+                  </span>
                 </div>
                 <div className="ri-desc">
-                  AI models forecast ≥35 kt wind increase in 24 hours.
+                  AI models forecast ≥30 kt wind increase in 24 hours.
                   Probability: {formatRI(pred.ri_probability)}
                 </div>
                 <div className="ri-bar">
@@ -319,6 +402,87 @@ export default function StormDetailPage() {
                 <div className="stat-value" style={{ color: 'var(--accent-green)', fontSize: '15px' }}>
                   {storm.movement_dir || 'WNW'}
                 </div>
+              </div>
+            </div>
+
+            {/* ── ENVIRONMENTAL TELEMETRY ── */}
+            <div className="panel-section-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>ENVIRONMENTAL DIAGNOSTICS</span>
+              <span style={{ fontSize: '10px', color: 'var(--accent-cyan)', textTransform: 'none', letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <FiBarChart2 size={11} /> Tap card for full graph
+              </span>
+            </div>
+            <div className="panel-env-grid">
+              <div
+                className="panel-env-cell card-tappable-cell"
+                onClick={() => { setSelectedCardForModal('sst'); setIsExpanded(true); }}
+                title="Tap to open Sea Surface Temp full graph"
+                style={{ cursor: 'pointer' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="env-cell-label">Sea Surface Temp (SST)</span>
+                  <FiMaximize2 size={10} style={{ opacity: 0.6, color: '#ff9d4d' }} />
+                </div>
+                <span className="env-cell-value" style={{ color: '#ff9d4d' }}>
+                  {pred?.sst ?? 29.2}°C
+                </span>
+                <span className="env-cell-sub">+{pred?.sst_anomaly ?? 1.4}°C Anomaly</span>
+              </div>
+
+              <div
+                className="panel-env-cell card-tappable-cell"
+                onClick={() => { setSelectedCardForModal('shear'); setIsExpanded(true); }}
+                title="Tap to open Vertical Wind Shear full graph"
+                style={{ cursor: 'pointer' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="env-cell-label">Vertical Wind Shear</span>
+                  <FiMaximize2 size={10} style={{ opacity: 0.6, color: 'var(--accent-green)' }} />
+                </div>
+                <span
+                  className="env-cell-value"
+                  style={{ color: (pred?.wind_shear ?? 13.5) < 12 ? 'var(--accent-green)' : '#ffb020' }}
+                >
+                  {pred?.wind_shear ?? 13.5} kt
+                </span>
+                <span className="env-cell-sub">{pred?.shear_status ?? 'Moderate'}</span>
+              </div>
+
+              <div
+                className="panel-env-cell card-tappable-cell"
+                onClick={() => { setSelectedCardForModal('rh'); setIsExpanded(true); }}
+                title="Tap to open Tropospheric Humidity full graph"
+                style={{ cursor: 'pointer' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="env-cell-label">Mid-Level RH (700mb)</span>
+                  <FiMaximize2 size={10} style={{ opacity: 0.6, color: 'var(--accent-cyan)' }} />
+                </div>
+                <span className="env-cell-value" style={{ color: 'var(--accent-cyan)' }}>
+                  {pred?.relative_humidity ?? 78}%
+                </span>
+                <span className="env-cell-sub">TPW {pred?.precipitable_water ?? 68} mm</span>
+              </div>
+
+              <div
+                className="panel-env-cell card-tappable-cell"
+                onClick={() => { setSelectedCardForModal('pres'); setIsExpanded(true); }}
+                title="Tap to open Pressure Dynamics full graph"
+                style={{ cursor: 'pointer' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="env-cell-label">Pressure Drop (3h)</span>
+                  <FiMaximize2 size={10} style={{ opacity: 0.6, color: '#ff3b52' }} />
+                </div>
+                <span
+                  className="env-cell-value"
+                  style={{
+                    color: (pred?.pressure_trend_3h ?? -2.1) < -1 ? 'var(--danger-red)' : 'var(--text-primary)'
+                  }}
+                >
+                  {pred?.pressure_trend_3h ?? -2.1} hPa
+                </span>
+                <span className="env-cell-sub">24h: {pred?.pressure_trend_24h ?? -7.4} hPa</span>
               </div>
             </div>
 
@@ -399,6 +563,25 @@ export default function StormDetailPage() {
           </div>
         </motion.div>
       )}
+
+      {/* ═══ EXPANDED BIG SCREEN DASHBOARD ═══ */}
+      <AnimatePresence>
+        {isExpanded && (
+          <StormExpandedDashboard
+            storm={storm}
+            prediction={pred}
+            initialCardGraph={selectedCardForModal}
+            onClose={() => {
+              setIsExpanded(false)
+              setSelectedCardForModal(null)
+            }}
+            onMinimize={() => {
+              setIsExpanded(false)
+              setSelectedCardForModal(null)
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -257,12 +257,24 @@ export default function WeatherMapView({
       const lon = storm.lon ?? storm.longitude
       if (lat == null || lon == null) return
 
+      const color = getCategoryColor(storm.category)
+
+      const triggerStorm = (e) => {
+        if (e) e.stopPropagation()
+        selectStorm(storm)
+        if (onStormClick) onStormClick(storm)
+      }
+
       if (stormMarkers.current[storm.id]) {
         stormMarkers.current[storm.id].setLngLat([lon, lat])
+        const existingEl = stormMarkers.current[storm.id].getElement()
+        if (existingEl) {
+          existingEl.onclick = triggerStorm
+          existingEl.ontouchend = triggerStorm
+        }
         return
       }
 
-      const color = getCategoryColor(storm.category)
       const el = document.createElement('div')
       el.className = 'storm-marker-label'
       el.innerHTML = `
@@ -270,11 +282,12 @@ export default function WeatherMapView({
         <span>${(storm.name || 'UNNAMED').toUpperCase()}</span>
       `
       el.style.cursor = 'pointer'
-      el.onclick = (e) => {
-        e.stopPropagation()
-        selectStorm(storm)
-        if (onStormClick) onStormClick(storm)
-      }
+      el.style.touchAction = 'manipulation'
+      el.style.pointerEvents = 'auto'
+      el.style.zIndex = '50'
+
+      el.onclick = triggerStorm
+      el.ontouchend = triggerStorm
 
       stormMarkers.current[storm.id] = new maplibregl.Marker({
         element: el,
@@ -284,6 +297,40 @@ export default function WeatherMapView({
         .setLngLat([lon, lat])
         .addTo(map.current)
     })
+
+    // Map canvas proximity touch/click: if user touches cyclone rings or eye on canvas
+    const handleMapCanvasClick = (e) => {
+      if (!map.current) return
+      const clickPoint = e.point || (e.points && e.points[0])
+      if (!clickPoint) return
+      let closest = null
+      let minDist = 70 // 70px touch target radius
+      storms.forEach((s) => {
+        const sLat = s.lat ?? s.latitude
+        const sLon = s.lon ?? s.longitude
+        if (sLat == null || sLon == null) return
+        const p = map.current.project([sLon, sLat])
+        const dist = Math.hypot(p.x - clickPoint.x, p.y - clickPoint.y)
+        if (dist < minDist) {
+          minDist = dist
+          closest = s
+        }
+      })
+      if (closest) {
+        selectStorm(closest)
+        if (onStormClick) onStormClick(closest)
+      }
+    }
+
+    map.current.on('click', handleMapCanvasClick)
+    map.current.on('touchend', handleMapCanvasClick)
+
+    return () => {
+      if (map.current) {
+        map.current.off('click', handleMapCanvasClick)
+        map.current.off('touchend', handleMapCanvasClick)
+      }
+    }
   }, [storms, styleLoaded, showStorms, selectStorm, onStormClick])
 
   // Calculate current radar frame timestamp

@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   FiWind, FiThermometer, FiCloudRain, FiArrowLeft, FiExternalLink,
 } from 'react-icons/fi'
 import { MdSatelliteAlt, MdRadar, MdWaves } from 'react-icons/md'
 import Navbar from '../components/layout/Navbar'
 import WeatherMapView from '../components/map/WeatherMapView'
+import MapStormCard from '../components/map/MapStormCard'
 import { useStormStore } from '../store/stormStore'
 import { getCategoryColor } from '../utils/stormColors'
 
@@ -23,6 +24,7 @@ export default function LiveWeatherPage() {
 
   const [activeLayer,   setActiveLayer]   = useState('radar')
   const [activeStormId, setActiveStormId] = useState(selectedStorm?.id || storms[0]?.id || null)
+  const [showCard,      setShowCard]      = useState(false)
 
   const centerStorm = storms.find((s) => s.id === activeStormId) || selectedStorm || storms[0] || null
   const centerLon   = centerStorm?.lon ?? centerStorm?.longitude ?? -40
@@ -40,6 +42,7 @@ export default function LiveWeatherPage() {
   const handleStormSelect = (storm) => {
     setActiveStormId(storm.id)
     selectStorm(storm)
+    setShowCard(true)
   }
 
   return (
@@ -56,6 +59,21 @@ export default function LiveWeatherPage() {
           showStorms={true}
           onStormClick={handleStormSelect}
         />
+
+        {/* ── Interactive Cyclone Card on Click ─────────────────── */}
+        <AnimatePresence>
+          {showCard && centerStorm && (
+            <MapStormCard
+              storm={centerStorm}
+              onClose={() => setShowCard(false)}
+              style={{
+                bottom: '76px',
+                left: '24px',
+                zIndex: 95,
+              }}
+            />
+          )}
+        </AnimatePresence>
 
         {/* ── Top-Left Info Badge ───────────────────────────────── */}
         <div className="lw-badge-tl">
