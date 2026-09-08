@@ -12,8 +12,11 @@ def init_db(app=None):
         logger.warning("DATABASE_URL not set — running in mock mode, no DB persistence")
         return False
     try:
+        db_uri = DATABASE_URL
+        if db_uri.startswith("postgres://"):
+            db_uri = db_uri.replace("postgres://", "postgresql://", 1)
         if app is not None:
-            app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+            app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
             app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
             db.init_app(app)
             with app.app_context():
